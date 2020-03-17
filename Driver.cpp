@@ -105,6 +105,9 @@ string Driver::vehicleTypeToString(VehicleType type) {
             return "Van";
         case OTHER:
             return "Other";
+        default:
+            perror("Invalid VehicleType in Driver::vehicleTypeToString");
+            return "";
     }
 }
 

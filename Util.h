@@ -16,7 +16,8 @@ public:
     static void save(Rides &rides, Passes &passes, Drivers &drivers);
     static void prettyPrint(vector<string> messages);
     static string bts(bool in);
+    static string printTime(long milli);
+    static string printUnlessDefault(double in, bool time);
 };
-
 
 #endif //FUNCS_H

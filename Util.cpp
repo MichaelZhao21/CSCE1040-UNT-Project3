@@ -17,9 +17,9 @@ int Util::intInput(string message, int start, int end) {
 void Util::load(Rides &rides, Passes &passes, Drivers &drivers) {
     ifstream in("meanGreenData");
     if (in.good()) {
-        vector<Pass> passList;
-        vector<Driver> driverList;
-        vector<Ride> rideList;
+        unordered_map<int, Pass> passMap {};
+        unordered_map<int, Driver> driverMap {};
+        unordered_map<int, Ride> rideMap {};
         string name, notes, pickLoc, dropLoc;
         int pay, id, cap, status, passId, driverId;
         double rat;
@@ -32,44 +32,51 @@ void Util::load(Rides &rides, Passes &passes, Drivers &drivers) {
                 getline(in, name);
                 in >> id >> pay >> hcp >> rat >> pets;
                 Pass p(name, id, (PayType) pay, hcp, rat, pets);
-                passList.push_back(p);
+                passMap[id] = p;
             }
             else if (type == 'd') {
                 in.ignore();
                 getline(in, name);
                 getline(in, notes);
                 in >> id >> cap >> hcp >> type >> rat >> open >> pets;
-                Driver d(name, id, cap, hcp, type, rat, open, pets, notes);
-                driverList.push_back(d);
+                Driver d(name, id, cap, hcp, (VehicleType) type, rat, open, pets, notes);
+                driverMap[id] = d;
             }
             else if (type == 'r') {
                 in.ignore();
                 getline(in, pickLoc);
                 getline(in, dropLoc);
                 in >> id >> pickTime >> cap >> pets >> dropTime >> status >> rat >> passId >> driverId;
-                Ride r(id, pickLoc, pickTime, dropLoc, cap, pets, dropTime, status, rat, passId, driverId);
-                rideList.push_back(r);
+                Ride r(id, pickLoc, pickTime, dropLoc, cap, pets, dropTime, (Status) status, rat, passId, driverId);
+                rideMap[id] = r;
             }
         }
-        passes.setPassList(passList);
-        drivers.setDriverList(driverList);
-        rides.setRideList(rideList);
+        passes.setPassList(passMap);
+        drivers.setDriverList(driverMap);
+        rides.setRideList(rideMap);
     }
     in.close();
 }
 
 void Util::save(Rides &rides, Passes &passes, Drivers &drivers) {
     ofstream out("meanGreenData");
-    for (const auto& p : passes.getPassList())
+    for (pair<int, Pass> pp : passes.getPassList()) {
+        Pass p = pp.second;
         out << 'p' << endl << p.getName() << endl << p.getId() << " " << p.getPayType() << " " << p.getHcp() << " " <<
                 p.getMinRating() << " " << p.getPets() << endl;
-    for (const auto& d : drivers.getDriverList())
+    }
+    for (pair<int, Driver> dp : drivers.getDriverList()) {
+        Driver d = dp.second;
         out << 'd' << endl << d.getName() << endl << d.getNotes() << endl << d.getId() << " " << d.getCap() << " " <<
-                d.getHcp() << " " << d.getType() << " " << d.getRating() << " " << d.getOpen() << " " << d.getPets() << endl;
-    for (const auto& r : rides.getRideList())
+            d.getHcp() << " " << d.getType() << " " << d.getRating() << " " << d.getOpen() << " " << d.getPets()
+            << endl;
+    }
+    for (pair<int, Ride> rp : rides.getRideList()) {
+        Ride r = rp.second;
         out << 'r' << " " << endl << r.getPickLoc() << endl << r.getDropLoc() << endl << r.getId() << " " << r.getPickTime() <<
                 " " << r.getSize() << " " << r.getPets() << " " << r.getDropTime() << " " <<
                 r.getStatus() << " " << r.getRating() << " " << r.getPassId() << " " << r.getDriverId() << endl;
+    }
     out.close();
 }
 
@@ -77,18 +84,21 @@ void Util::prettyPrint(vector<string> messages) {
     int origWidth = (int) messages[0].length() + 6;
     int maxWidth = origWidth;
     for (unsigned int i = 1; i < messages.size(); i++) {
-        cout << messages[i] << endl;
         if (messages[i].size() + 4 > maxWidth) {
             maxWidth = (int) messages[i].length() + 4;
         }
     }
     int diff = 0;
+    int uneven = 0;
     if (origWidth != maxWidth) {
-        if (maxWidth % 2 == 1) maxWidth++;
+        if (maxWidth % 2 == 1) {
+            maxWidth++;
+            if (origWidth % 2 == 0)
+                uneven++;
+        };
         diff = (maxWidth - origWidth) / 2;
-        cout << maxWidth << " " << origWidth << " " << diff << endl;
     }
-    cout << "+" << string(diff, '-') << "- " << messages[0] << " -" << string(diff, '-') << "-+" << endl;
+    cout << "+" << string(diff - uneven, '-') << "- " << messages[0] << " -" << string(diff, '-') << "-+" << endl;
     for (unsigned int i = 1; i < messages.size(); i++) {
         diff = maxWidth - messages[i].length() - 4;
         cout << "| " << messages[i] << string(diff, ' ') << " |" << endl;
@@ -99,4 +109,14 @@ void Util::prettyPrint(vector<string> messages) {
 string Util::bts(bool in) {
     if (in) return "yes";
     return "no";
+}
+
+string Util::printTime(time_t milli) {
+    return ctime(&milli);
+}
+
+string Util::printUnlessDefault(double in, bool time) {
+    if (in == -1) return "N/A";
+    if (time) return printTime(in);
+    return to_string(in);
 }

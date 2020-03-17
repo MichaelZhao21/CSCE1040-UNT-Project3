@@ -76,6 +76,7 @@ string Pass::payTypeToString(PayType p) {
         case DEBIT:
             return "debit";
         default:
+            perror("Invalid PayType in Pass::payTypeToString");
             return "";
     }
 }

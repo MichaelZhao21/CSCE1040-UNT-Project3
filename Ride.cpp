@@ -1,19 +1,16 @@
-//
-// Created by micha on 3/8/2020.
-//
-
+#include "Util.h"
 #include "Ride.h"
 
 Ride::Ride() : id(0), pickLoc(""), pickTime(0), dropLoc(""), size(0), pets(false), dropTime(0),
-               status(0), rating(0), passId(0), driverId(0) {}
+               status(ACTIVE), rating(0), passId(0), driverId(0) {}
 
-Ride::Ride(int id, const string &pickLoc, long pickTime, const string &dropLoc, int size, bool pets, int passId,
+Ride::Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, int passId,
         int driverId) : id(id), pickLoc(pickLoc), pickTime(pickTime),dropLoc(dropLoc), size(size), pets(pets),
-                        dropTime(0), status(0), rating(0), passId(passId), driverId(driverId) {}
+                        dropTime(-1), status(ACTIVE), rating(-1), passId(passId), driverId(driverId) {}
 
 
-Ride::Ride(int id, const string &pickLoc, long pickTime, const string &dropLoc, int size, bool pets, long dropTime,
-           int status, double rating, int passId, int driverId) : id(id), pickLoc(pickLoc), pickTime(pickTime),
+Ride::Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, time_t dropTime,
+           Status status, double rating, int passId, int driverId) : id(id), pickLoc(pickLoc), pickTime(pickTime),
                                                                   dropLoc(dropLoc), size(size), pets(pets),
                                                                   dropTime(dropTime), status(status), rating(rating),
                                                                   passId(passId), driverId(driverId) {}
@@ -34,11 +31,11 @@ void Ride::setPickLoc(const string &pickLoc) {
     Ride::pickLoc = pickLoc;
 }
 
-long Ride::getPickTime() const {
+time_t Ride::getPickTime() const {
     return pickTime;
 }
 
-void Ride::setPickTime(long pickTime) {
+void Ride::setPickTime(time_t pickTime) {
     Ride::pickTime = pickTime;
 }
 
@@ -66,19 +63,19 @@ void Ride::setPets(bool pets) {
     Ride::pets = pets;
 }
 
-long Ride::getDropTime() const {
+time_t Ride::getDropTime() const {
     return dropTime;
 }
 
-void Ride::setDropTime(long dropTime) {
+void Ride::setDropTime(time_t dropTime) {
     Ride::dropTime = dropTime;
 }
 
-int Ride::getStatus() const {
+Status Ride::getStatus() const {
     return status;
 }
 
-void Ride::setStatus(int status) {
+void Ride::setStatus(Status status) {
     Ride::status = status;
 }
 
@@ -107,5 +104,32 @@ void Ride::setDriverId(int driverId) {
 }
 
 void Ride::printRide() {
-    // TODO printRide
+    string pt = Util::printTime(time(nullptr));
+    string dt = Util::printUnlessDefault(dropTime, true);
+    vector<string> text {"Ride #" + to_string(id),
+                         "Pickup Location: " + pickLoc,
+                         "Pickup Time: " + pt.substr(0, pt.size() - 1),
+                         "Drop-off Location: " + dropLoc,
+                         "Size of party: " + to_string(size),
+                         "Includes pets: " + Util::bts(pets),
+                         "Drop-off Time: " + (dt != "N/A" ? dt.substr(0, dt.size() - 1) : dt),
+                         "Status: " + statusToString(status),
+                         "Rating by Customer: " + Util::printUnlessDefault(rating, false),
+                         "Passenger ID: " + to_string(passId),
+                         "Driver ID: " + to_string(driverId)};
+    Util::prettyPrint(text);
+}
+
+string Ride::statusToString(Status s) {
+    switch (s) {
+        case ACTIVE:
+            return "Active";
+        case COMPLETED:
+            return "Completed";
+        case CANCELLED:
+            return "Cancelled";
+        default:
+            perror("Invalid Status in Ride::statusToString");
+            return "";
+    }
 }

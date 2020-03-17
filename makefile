@@ -4,25 +4,25 @@ MeanGreenEagleLift: main.o Pass.o Ride.o Driver.o Passes.o Rides.o Drivers.o Uti
 main.o: main.cpp Pass.h Ride.h Driver.h Passes.h Rides.h Drivers.h Util.h
 	g++ -c main.cpp
 
-Pass.o: Pass.cpp Pass.h
+Pass.o: Pass.cpp Pass.h Defs.h
 	g++ -c Pass.cpp
 
-Ride.o: Ride.cpp Ride.h
+Ride.o: Ride.cpp Ride.h Defs.h
 	g++ -c Ride.cpp
 
-Driver.o: Driver.cpp Driver.h
+Driver.o: Driver.cpp Driver.h Defs.h
 	g++ -c Driver.cpp
 
-Passes.o: Passes.cpp Passes.h Pass.h
+Passes.o: Passes.cpp Util.h Pass.h
 	g++ -c Passes.cpp
 
-Rides.o: Rides.cpp Rides.h Ride.h
+Rides.o: Rides.cpp Util.h Ride.h
 	g++ -c Rides.cpp
 
-Drivers.o: Drivers.cpp Drivers.h Driver.h
+Drivers.o: Drivers.cpp Util.h Driver.h
 	g++ -c Drivers.cpp
 
-Util.o: Util.cpp Pass.h Ride.h Driver.h Passes.h Rides.h Drivers.h Util.h
+Util.o: Util.cpp Pass.h Ride.h Driver.h Passes.h Rides.h Drivers.h Util.h Defs.h
 	g++ -c Util.cpp
 
 clean:
