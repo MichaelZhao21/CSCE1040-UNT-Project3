@@ -17,8 +17,9 @@ public:
 
     static void save(Rides &rides, Passes &passes, Drivers &drivers);
 
-    static void prettyPrint(string* messages);
+    static void prettyPrint(vector<string> messages);
 
+    static string bts(bool in);
 };
 
 

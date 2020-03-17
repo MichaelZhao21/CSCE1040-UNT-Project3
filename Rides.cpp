@@ -1,18 +1,19 @@
-#include "Rides.h"
+#include "Util.h"
 
-Rides::Rides() : rideList(vector<Ride>()) {}
+Rides::Rides() : rideList(unordered_map<int, Ride>()) {}
 
-Rides::Rides(const vector<Ride> &rideList) : rideList(rideList) {}
+Rides::Rides(const unordered_map<int, Ride> &rideList) : rideList(rideList) {}
 
-const vector<Ride> &Rides::getRideList() const {
+const unordered_map<int, Ride> &Rides::getRideList() const {
     return rideList;
 }
 
-void Rides::setRideList(const vector<Ride> &rideList) {
+void Rides::setRideList(const unordered_map<int, Ride> &rideList) {
     Rides::rideList = rideList;
 }
 
 void Rides::addRide() {
+
 }
 
 bool Rides::checkDriverOpen() {
@@ -35,12 +36,12 @@ void Rides::printAllRides() {
 
 }
 
-vector<Ride> Rides::findAllPassRides() {
-    return vector<Ride>();
+unordered_map<int, Ride> Rides::findAllPassRides() {
+    return unordered_map<int, Ride>();
 }
 
-vector<Ride> Rides::findAllDriverRides() {
-    return vector<Ride>();
+unordered_map<int, Ride> Rides::findAllDriverRides() {
+    return unordered_map<int, Ride>();
 }
 
 void Rides::printActiveRides() {
@@ -66,4 +67,3 @@ void Rides::printPassSchedule() {
 void Rides::removeUselessRides() {
 
 }
-

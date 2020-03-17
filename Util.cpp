@@ -73,21 +73,30 @@ void Util::save(Rides &rides, Passes &passes, Drivers &drivers) {
     out.close();
 }
 
-void Util::prettyPrint(string *messages) {
-    unsigned int origWidth = messages[0].size() + 6;
-    unsigned int maxWidth = origWidth;
-    for (unsigned int i = 1; i < messages->size(); i++) {
+void Util::prettyPrint(vector<string> messages) {
+    int origWidth = (int) messages[0].length() + 6;
+    int maxWidth = origWidth;
+    for (unsigned int i = 1; i < messages.size(); i++) {
+        cout << messages[i] << endl;
         if (messages[i].size() + 4 > maxWidth) {
-            maxWidth = messages[i].size() + 4;
+            maxWidth = (int) messages[i].length() + 4;
         }
     }
-    unsigned int diff = 0;
+    int diff = 0;
     if (origWidth != maxWidth) {
         if (maxWidth % 2 == 1) maxWidth++;
-        diff = maxWidth - origWidth / 2;
+        diff = (maxWidth - origWidth) / 2;
+        cout << maxWidth << " " << origWidth << " " << diff << endl;
     }
-    string head = "+- " + string(diff, '-') + messages[0] + string(diff, '-') + " -+";
-    for (unsigned int i = 0; i < messages->size(); i++) {
+    cout << "+" << string(diff, '-') << "- " << messages[0] << " -" << string(diff, '-') << "-+" << endl;
+    for (unsigned int i = 1; i < messages.size(); i++) {
+        diff = maxWidth - messages[i].length() - 4;
+        cout << "| " << messages[i] << string(diff, ' ') << " |" << endl;
+    }
+    cout << "+" << string(maxWidth - 2, '-') << "+" << endl << endl;
+}
 
-    }
+string Util::bts(bool in) {
+    if (in) return "yes";
+    return "no";
 }

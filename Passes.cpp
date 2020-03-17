@@ -1,14 +1,14 @@
 #include "Passes.h"
 
-Passes::Passes() : passList(vector<Pass>()) {};
+Passes::Passes() : passList(unordered_map<int, Pass>()){}
 
-Passes::Passes(const vector<Pass> &passList) : passList(passList) {}
+Passes::Passes(const unordered_map<int, Pass> &passList) : passList(passList) {}
 
-const vector<Pass> &Passes::getPassList() const {
+const unordered_map<int, Pass> &Passes::getPassList() const {
     return passList;
 }
 
-void Passes::setPassList(const vector<Pass> &passList) {
+void Passes::setPassList(const unordered_map<int, Pass> &passList) {
     Passes::passList = passList;
 }
 

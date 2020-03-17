@@ -1,21 +1,19 @@
 #ifndef PASSES_H
 #define PASSES_H
 
-#include <vector>
-#include <iostream>
+#include "Defs.h"
 #include "Pass.h"
 using namespace std;
 
 class Passes {
 public:
-
     Passes();
 
-    explicit Passes(const vector<Pass> &passList);
+    Passes(const unordered_map<int, Pass> &passList);
 
-    const vector<Pass> &getPassList() const;
+    const unordered_map<int, Pass> &getPassList() const;
 
-    void setPassList(const vector<Pass> &passList);
+    void setPassList(const unordered_map<int, Pass> &passList);
 
     void addPass();
 
@@ -26,7 +24,7 @@ public:
     void printAllPasses();
 
 private:
-    vector<Pass> passList;
+    unordered_map<int, Pass> passList;
 };
 
 #endif //PASSES_H

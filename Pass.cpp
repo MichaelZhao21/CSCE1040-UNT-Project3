@@ -57,15 +57,14 @@ void Pass::setPets(bool pets) {
 }
 
 void Pass::printPass() {
-
-    cout << "Passenger #" << id << endl;
-    cout << "-----------------" << endl;
-    cout << "Name: " << name << endl;
-    cout << "Payment Preference: " << payTypeToString(payType) << endl;
-    cout << "Handicapped: " << (hcp ? "yes" : "no") << endl;
-    cout << "Default rating required: " << minRating << endl;
-    cout << "Has pets: " << (pets ? "yes" : "no") << endl;
-    cout << "-----------------" << endl << endl;
+    vector<string> text {"Passenger #" + to_string(id),
+                  "Name: " + name,
+                  "Payment Preference: " + payTypeToString(payType),
+                  "Handicapped: " + Util::bts(hcp),
+                  "Default rating required: " + to_string(minRating),
+                  "Has pets: " + Util::bts(pets)
+                  };
+    Util::prettyPrint(text);
 }
 
 string Pass::payTypeToString(PayType p) {

@@ -16,6 +16,7 @@ int main() {
     Ride r(327121, "3208 Mill Ridge Dr", 1583798400, "4428 Waskom Dr", 5, false, 320668, 534291);
 
     p.printPass();
+
     rides.setRideList(vector<Ride>{r});
     passes.setPassList(vector<Pass>{p});
     drivers.setDriverList(vector<Driver>{d});

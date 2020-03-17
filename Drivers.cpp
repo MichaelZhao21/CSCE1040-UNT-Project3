@@ -1,14 +1,14 @@
-#include "Drivers.h"
+#include "Util.h"
 
-Drivers::Drivers() : driverList(vector<Driver>()){}
+Drivers::Drivers() : driverList(unordered_map<int, Driver>()) {}
 
-Drivers::Drivers(const vector<Driver> &driverList) : driverList(driverList) {}
+Drivers::Drivers(const unordered_map<int, Driver> &driverList) : driverList(driverList) {}
 
-const vector<Driver> &Drivers::getDriverList() const {
+const unordered_map<int, Driver> &Drivers::getDriverList() const {
     return driverList;
 }
 
-void Drivers::setDriverList(const vector<Driver> &driverList) {
+void Drivers::setDriverList(const unordered_map<int, Driver> &driverList) {
     Drivers::driverList = driverList;
 }
 
