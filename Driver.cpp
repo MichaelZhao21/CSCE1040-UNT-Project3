@@ -1,8 +1,10 @@
+#include "Util.h"
 #include "Driver.h"
 
-Driver::Driver() : name(""), id(0), cap(0), hcp(false), type(0), rating(0.0), open(false), pets(false), notes("") {}
 
-Driver::Driver(const string &name, int id, int cap, bool hcp, int type, double rating, bool open, bool pets,
+Driver::Driver() : name(""), id(0), cap(0), hcp(false), type(VehicleType::COMPACT_2_DR), rating(0.0), open(false), pets(false), notes("") {}
+
+Driver::Driver(const string &name, int id, int cap, bool hcp, VehicleType type, double rating, bool open, bool pets,
                const string &notes) : name(name), id(id), cap(cap), hcp(hcp), type(type), rating(rating), open(open),
                                       pets(pets), notes(notes) {}
 
@@ -38,11 +40,11 @@ void Driver::setHcp(bool hcp) {
     Driver::hcp = hcp;
 }
 
-int Driver::getType() const {
+VehicleType Driver::getType() const {
     return type;
 }
 
-void Driver::setType(int type) {
+void Driver::setType(VehicleType type) {
     Driver::type = type;
 }
 
@@ -79,5 +81,30 @@ void Driver::setNotes(const string &notes) {
 }
 
 void Driver::printDriver() {
-    // TODO printDriver
+    vector<string> text {"Driver #" + to_string(id),
+                   "Name: " + name,
+                   "Vehicle capacity: " + to_string(cap),
+                   "Handicapped capable: " + Util::bts(hcp),
+                   "Vehicle type: " + vehicleTypeToString(type),
+                   "Driver Rating: " + to_string(rating),
+                   "Available: " + Util::bts(open),
+                   "Pets allowed: " + Util::bts(pets),
+                   "Notes: " + notes};
+    Util::prettyPrint(text);
 }
+
+string Driver::vehicleTypeToString(VehicleType type) {
+    switch (type) {
+        case COMPACT_2_DR:
+            return "Compact (2WD)";
+        case SEDAN_4_DR:
+            return "Sedan (4WD)";
+        case SUV:
+            return "SUV";
+        case VAN:
+            return "Van";
+        case OTHER:
+            return "Other";
+    }
+}
+

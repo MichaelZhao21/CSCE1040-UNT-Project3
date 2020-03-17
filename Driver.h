@@ -4,12 +4,14 @@
 #include <string>
 using namespace std;
 
+enum VehicleType {COMPACT_2_DR = 1, SEDAN_4_DR, SUV, VAN, OTHER};
+
 class Driver {
 public:
 
     Driver();
 
-    Driver(const string &name, int id, int cap, bool hcp, int type, double rating, bool open, bool pets,
+    Driver(const string &name, int id, int cap, bool hcp, VehicleType type, double rating, bool open, bool pets,
            const string &notes);
 
     const string &getName() const;
@@ -28,9 +30,9 @@ public:
 
     void setHcp(bool hcp);
 
-    int getType() const;
+    VehicleType getType() const;
 
-    void setType(int type);
+    void setType(VehicleType type);
 
     double getRating() const;
 
@@ -55,12 +57,12 @@ private:
     int id;
     int cap;
     bool hcp;
-    int type;
+    VehicleType type;
     double rating;
     bool open;
     bool pets;
     string notes;
+    static string vehicleTypeToString(VehicleType type);
 };
-
 
 #endif //DRIVER_H
