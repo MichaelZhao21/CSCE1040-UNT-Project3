@@ -106,7 +106,7 @@ void Ride::setDriverId(int driverId) {
 void Ride::printRide() {
     string pt = Util::printTime(time(nullptr));
     string dt = Util::printUnlessDefault(dropTime, true);
-    vector<string> text {"Ride #" + to_string(id),
+    vs text {"Ride #" + to_string(id),
                          "Pickup Location: " + pickLoc,
                          "Pickup Time: " + pt.substr(0, pt.size() - 1),
                          "Drop-off Location: " + dropLoc,

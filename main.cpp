@@ -10,6 +10,16 @@ int main() {
     // Load previous instance, if possible
     Util::load(rides, passes, drivers);
 
+    // Print intro
+    Util::printIntro();
+
+    // Main loop
+    Util::printMenu();
+    int input = 0;
+    while (input != 9) {
+        input = Util::getMenuOption();
+    }
+
     // Test!
     Driver d("John", 534291, 5, false, (VehicleType) 1, 5, true, false, "I AM COOL");
     Pass p("Michael", 320668, (PayType) 2, true, 1, true);
@@ -22,6 +32,7 @@ int main() {
     d.printDriver();
     r.printRide();
 
+    // Save file
     Util::save(rides, passes, drivers);
 
     return 0;

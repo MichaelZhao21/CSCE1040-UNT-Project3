@@ -57,7 +57,7 @@ void Pass::setPets(bool pets) {
 }
 
 void Pass::printPass() {
-    vector<string> text {"Passenger #" + to_string(id),
+    vs text {"Passenger #" + to_string(id),
                   "Name: " + name,
                   "Payment Preference: " + payTypeToString(payType),
                   "Handicapped: " + Util::bts(hcp),

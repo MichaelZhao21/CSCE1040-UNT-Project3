@@ -81,7 +81,7 @@ void Driver::setNotes(const string &notes) {
 }
 
 void Driver::printDriver() {
-    vector<string> text {"Driver #" + to_string(id),
+    vs text {"Driver #" + to_string(id),
                    "Name: " + name,
                    "Vehicle capacity: " + to_string(cap),
                    "Handicapped capable: " + Util::bts(hcp),

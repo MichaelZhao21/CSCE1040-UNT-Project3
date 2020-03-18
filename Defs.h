@@ -10,4 +10,6 @@
 #include <fstream>
 using namespace std;
 
+typedef vector<string> vs;
+
 #endif //DEFS_H

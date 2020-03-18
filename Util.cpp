@@ -14,6 +14,28 @@ int Util::intInput(string message, int start, int end) {
     return input;
 }
 
+void Util::printIntro() {
+    vs text {"CSCE 1040 PROJECT 3",
+             "Name:        Michael Zhao (michaelzhao314@gmail.com)",
+             "Date:        3/20/2020",
+             "Instructor:  Mark Keathly",
+             "Description: This project is a simulation of a real system used to schedule drivers",
+             "             and passengers using a transaction-based class system. The system can",
+             "             create schedules, manage rides, and automatically checks for requirements",
+             "             before allocating drivers to passengers. Additionally, it has a save and",
+             "             load system as well as input checking."};
+    prettyPrint(text);
+}
+
+void Util::printMenu() {
+    vs mainMenu {"MENU",
+                 ""}; //TODO menu
+}
+
+int Util::getMenuOption() {
+    return 0;
+}
+
 void Util::load(Rides &rides, Passes &passes, Drivers &drivers) {
     ifstream in("meanGreenData");
     if (in.good()) {
@@ -80,7 +102,7 @@ void Util::save(Rides &rides, Passes &passes, Drivers &drivers) {
     out.close();
 }
 
-void Util::prettyPrint(vector<string> messages) {
+void Util::prettyPrint(vs messages) {
     int origWidth = (int) messages[0].length() + 6;
     int maxWidth = origWidth;
     for (unsigned int i = 1; i < messages.size(); i++) {
