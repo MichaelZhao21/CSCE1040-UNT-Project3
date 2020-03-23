@@ -1,6 +1,6 @@
 #include "Util.h"
 
-int Util::intInput(string message, int start, int end) {
+int Util::intInput(const string& message, int start, int end) {
     int input = start - 1;
     cout << message;
     cin >> input;
@@ -14,26 +14,32 @@ int Util::intInput(string message, int start, int end) {
     return input;
 }
 
-void Util::printIntro() {
-    vs text {"CSCE 1040 PROJECT 3",
-             "Name:        Michael Zhao (michaelzhao314@gmail.com)",
-             "Date:        3/20/2020",
-             "Instructor:  Mark Keathly",
-             "Description: This project is a simulation of a real system used to schedule drivers",
-             "             and passengers using a transaction-based class system. The system can",
-             "             create schedules, manage rides, and automatically checks for requirements",
-             "             before allocating drivers to passengers. Additionally, it has a save and",
-             "             load system as well as input checking."};
+unordered_map<TextLabel, vs> Util::getText() {
+    unordered_map<TextLabel, vs> text {
+        {
+            TextLabel::INTRO,
+                {"CSCE 1040 PROJECT 3",
+                 "Name:        Michael Zhao (michaelzhao314@gmail.com)",
+                 "Date:        3/20/2020",
+                 "Instructor:  Mark Keathly",
+                 "Description: This project is a simulation of a real system used to schedule drivers",
+                 "             and passengers using a transaction-based class system. The system can",
+                 "             create schedules, manage rides, and automatically checks for requirements",
+                 "             before allocating drivers to passengers. Additionally, it has a save and",
+                 "             load system as well as input checking."}
+        },
+        {
+            TextLabel::MAIN_MENU,
+                {"MEAN GREEN EAGLELIFT SYSTEM",
+                 "1. Driver Menu",
+                 "2. Passenger Menu"}
+        }};
+    return text;
+}
+
+int Util::menu(const vs& text) {
     prettyPrint(text);
-}
-
-void Util::printMenu() {
-    vs mainMenu {"MENU",
-                 ""}; //TODO menu
-}
-
-int Util::getMenuOption() {
-    return 0;
+    return intInput("Enter an option: ", 1, text.size());
 }
 
 void Util::load(Rides &rides, Passes &passes, Drivers &drivers) {
@@ -141,4 +147,10 @@ string Util::printUnlessDefault(double in, bool time) {
     if (in == -1) return "N/A";
     if (time) return printTime(in);
     return to_string(in);
+}
+
+int Util::genId(int digits) {
+    int start = pow(10, digits);
+    int end = digits * 10 - 1;
+    return rand() % end + start;
 }

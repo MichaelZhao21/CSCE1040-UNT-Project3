@@ -2,6 +2,12 @@
 using namespace std;
 
 int main() {
+    // Seed random number generator
+    srand(time(nullptr));
+
+    // Get text
+    unordered_map<TextLabel, vs> text = Util::getText();
+
     // Declare collector objects
     Drivers drivers;
     Passes passes;
@@ -11,14 +17,13 @@ int main() {
     Util::load(rides, passes, drivers);
 
     // Print intro
-    Util::printIntro();
+    Util::prettyPrint(text[TextLabel::INTRO]);
 
     // Main loop
-    Util::printMenu();
-    int input = 0;
-    while (input != 9) {
-        input = Util::getMenuOption();
-    }
+//    int input = Util::menu(text[TextLabel::MAIN_MENU]);
+//    while (input != 9) {
+//        input = Util::menu(text[TextLabel::MAIN_MENU]);
+//    }
 
     // Test!
     Driver d("John", 534291, 5, false, (VehicleType) 1, 5, true, false, "I AM COOL");
