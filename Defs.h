@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <limits>
 #include <fstream>
+#include <cmath>
 using namespace std;
 
 typedef vector<string> vs;

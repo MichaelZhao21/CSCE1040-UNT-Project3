@@ -39,6 +39,5 @@ int main() {
 
     // Save file
     Util::save(rides, passes, drivers);
-
     return 0;
 }

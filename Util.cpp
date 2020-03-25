@@ -2,13 +2,16 @@
 
 int Util::intInput(const string& message, int start, int end) {
     int input = start - 1;
-    cout << message;
-    cin >> input;
-    while (cin.fail() || input < start || input > end) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    bool fail = true;
+    while (fail) {
+        fail = false;
         cout << message;
         cin >> input;
+        if (cin.fail() || input < start || input > end) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            fail = true;
+        }
     }
     cin.ignore();
     return input;
