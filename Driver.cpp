@@ -52,7 +52,7 @@ double Driver::getRating() const {
     return rating;
 }
 
-void Driver::setRating(int rating) {
+void Driver::setRating(double rating) {
     Driver::rating = rating;
 }
 
@@ -110,4 +110,3 @@ string Driver::vehicleTypeToString(VehicleType type) {
             return "";
     }
 }
-

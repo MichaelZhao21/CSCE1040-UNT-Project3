@@ -1,7 +1,7 @@
 #ifndef RIDE_H
 #define RIDE_H
 
-#include <string>
+#include "Defs.h"
 using namespace std;
 
 enum Status {ACTIVE, COMPLETED, CANCELLED};
@@ -9,7 +9,7 @@ enum Status {ACTIVE, COMPLETED, CANCELLED};
 class Ride {
 public:
     Ride();
-    Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, int passId, int driverId);
+    Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, time_t dropTime, int passId, int driverId);
     Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, time_t dropTime,
          Status status, double rating, int passId, int driverId);
     int getId() const;
@@ -36,17 +36,12 @@ public:
     void setDriverId(int driverId);
     void printRide();
 private:
-    int id;
-    string pickLoc;
-    time_t pickTime;
-    string dropLoc;
-    int size;
+    int id, size, passId, driverId;
+    string pickLoc, dropLoc;
+    time_t pickTime, dropTime;
     bool pets;
-    time_t dropTime;
     Status status;
     double rating;
-    int passId;
-    int driverId;
     static string statusToString(Status s);
 };
 

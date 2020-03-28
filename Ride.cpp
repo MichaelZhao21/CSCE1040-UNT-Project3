@@ -4,10 +4,9 @@
 Ride::Ride() : id(0), pickLoc(""), pickTime(0), dropLoc(""), size(0), pets(false), dropTime(0),
                status(ACTIVE), rating(0), passId(0), driverId(0) {}
 
-Ride::Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, int passId,
+Ride::Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, time_t dropTime, int passId,
         int driverId) : id(id), pickLoc(pickLoc), pickTime(pickTime),dropLoc(dropLoc), size(size), pets(pets),
-                        dropTime(-1), status(ACTIVE), rating(-1), passId(passId), driverId(driverId) {}
-
+                        dropTime(dropTime), status(ACTIVE), rating(-1), passId(passId), driverId(driverId) {}
 
 Ride::Ride(int id, const string &pickLoc, time_t pickTime, const string &dropLoc, int size, bool pets, time_t dropTime,
            Status status, double rating, int passId, int driverId) : id(id), pickLoc(pickLoc), pickTime(pickTime),

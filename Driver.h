@@ -1,7 +1,7 @@
 #ifndef DRIVER_H
 #define DRIVER_H
 
-#include <string>
+#include "Defs.h"
 using namespace std;
 
 enum VehicleType {COMPACT_2_DR = 1, SEDAN_4_DR, SUV, VAN, OTHER};
@@ -22,7 +22,7 @@ public:
     VehicleType getType() const;
     void setType(VehicleType type);
     double getRating() const;
-    void setRating(int rating);
+    void setRating(double rating);
     bool getOpen() const;
     void setOpen(bool open);
     bool getPets() const;
@@ -31,15 +31,11 @@ public:
     void setNotes(const string &notes);
     void printDriver();
 private:
-    string name;
-    int id;
-    int cap;
-    bool hcp;
-    VehicleType type;
+    string name, notes;
+    int id, cap;
     double rating;
-    bool open;
-    bool pets;
-    string notes;
+    bool hcp, open, pets;
+    VehicleType type;
     static string vehicleTypeToString(VehicleType type);
 };
 

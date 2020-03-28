@@ -8,16 +8,18 @@ using namespace std;
 class Drivers {
 public:
     Drivers();
-    Drivers(const unordered_map<int, Driver> &driverList);
-    const unordered_map<int, Driver> &getDriverList() const;
-    void setDriverList(const unordered_map<int, Driver> &driverList);
+    Drivers(const unordered_map<int, Driver> &driverList, int nextId);
+    int getNextId() const;
+    void setNextId(int nextId);
     void addDriver();
     void editDriver();
     void removeDriver();
-    Driver findDriver();
+    int findDriver();
+    void findAndPrintDriver();
     void printAllDrivers();
-private:
     unordered_map<int, Driver> driverList;
+private:
+    int nextId;
 };
 
 #endif //DRIVERS_H

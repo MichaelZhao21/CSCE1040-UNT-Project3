@@ -70,11 +70,11 @@ void Pass::printPass() {
 string Pass::payTypeToString(PayType p) {
     switch (p) {
         case CASH:
-            return "cash";
+            return "Cash";
         case CREDIT:
-            return "credit";
+            return "Credit";
         case DEBIT:
-            return "debit";
+            return "Debit";
         default:
             perror("Invalid PayType in Pass::payTypeToString");
             return "";

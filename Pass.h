@@ -7,10 +7,10 @@ enum PayType {CASH = 1, CREDIT, DEBIT};
 
 class Pass {
 public:
-    const string &getName() const;
-    void setName(const string &name);
     Pass();
     Pass(const string &name, int id, PayType payType, bool hcp, double minRating, bool pets);
+    const string &getName() const;
+    void setName(const string &name);
     int getId() const;
     void setId(int id);
     PayType getPayType() const;
@@ -26,9 +26,8 @@ private:
     string name;
     int id;
     PayType payType;
-    bool hcp;
+    bool hcp, pets;
     double minRating;
-    bool pets;
     static string payTypeToString(PayType p);
 };
 
