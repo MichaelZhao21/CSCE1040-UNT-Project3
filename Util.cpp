@@ -40,18 +40,13 @@ bool Util::parseInput(double& in, const string &message, double start, double en
 
 bool Util::parseInput(string& in, const string &message, bool checkDefault) {
     in = "";
-    if (checkDefault) {
+    while (in.empty()) {
         cout << message << ": ";
         getline(cin, in);
-        return in.empty();
+        if (checkDefault && in.empty())
+            return false;
     }
-    else {
-        while (in.empty()) {
-            cout << message << ": ";
-            getline(cin, in);
-        }
-        return true;
-    }
+    return true;
 }
 
 bool Util::parseInput(int &in, const string &message, const vs &enumNames, bool checkDefault) {
@@ -266,7 +261,7 @@ vs Util::getList(string title, const vector<Ride>& rideGroup, bool onlyTime, Pas
     vs text{move(title)};
     stringstream temp;
     for (auto & r : rideGroup) {
-        temp << "#" << r.getId();
+        temp << r.getId();
         if (!onlyTime){
             temp << " | " << "P: " << passes.passList[r.getPassId()].getName() << " (#" << r.getPassId() << ") | ";
             temp << "D: " << drivers.driverList[r.getDriverId()].getName() << " (#" << r.getDriverId() << ")";
@@ -403,6 +398,8 @@ void Util::mainLoop(Drivers& drivers, Passes& passes, Rides& rides) {
                         case 6:
                             rides.removeUselessRides();
                             break;
+                        case 7:
+                            Util::clearSaveFile();
                         default:
                             submenu = false;
                             break;
@@ -418,4 +415,11 @@ void Util::mainLoop(Drivers& drivers, Passes& passes, Rides& rides) {
         }
 
     }
+}
+
+void Util::clearSaveFile() {
+    ofstream dat("mg.dat");
+    if (dat.good())
+        dat << "";
+    dat.close();
 }

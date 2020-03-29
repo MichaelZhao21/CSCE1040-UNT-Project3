@@ -100,7 +100,6 @@ int Rides::findRide(Passes& passes, Drivers& drivers) {
     }
     vs text = Util::getList("Pick a ride", rideVec, false, passes, drivers);
     int index = Util::menu(text);
-    cout << text[index];
     return stoi(text[index]);
 }
 
@@ -124,8 +123,17 @@ void Rides::cancelRide(Passes& passes, Drivers& drivers) {
 
 void Rides::rateRides(Passes& passes, Drivers& drivers) {
     cout << "<<< Rate Ride >>>" << endl;
-    if (rideListEmpty()) return;
-    int r = findRide(passes, drivers);
+    vector<Ride> rides;
+    for (auto& r : rideList)
+        if (r.second.getStatus() == Status::COMPLETED)
+            rides.push_back(r.second);
+    if (rides.empty()) {
+        cout << "No completed rides :(" << endl << endl;
+        Util::waitForEnter();
+        return;
+    }
+    vs text = Util::getList("Pick a ride", rides, false, passes, drivers);
+    int r = Util::menu(text);
     double rating;
     Util::parseInput(rating, "Enter rating", 0, 5, false);
     rideList[r].setRating(rating);
@@ -140,6 +148,8 @@ void Rides::printAllRides() {
 }
 
 void Rides::printRideByStatus(Status s) {
+    cout << "<<< Print all " << Ride::statusToString(s) << " Rides >>>" << endl;
+    if (rideListEmpty()) return;
     vs text {Ride::statusToString(s) + " Rides"};
     for (pair<int, Ride> r : rideList) {
         if (r.second.getStatus() == s)
@@ -168,28 +178,44 @@ vector<Ride> Rides::getPassRides(Pass& pass) {
 
 void Rides::printDriverSchedule(Passes& passes, Drivers& drivers) {
     cout << "<<< Print Driver Schedule >>>" << endl;
+    if (drivers.driverListEmpty()) return;
     int index = drivers.findDriver();
+
     vector<Ride> dr = getDriverRides(drivers.driverList[index]);
     vs text = Util::getList("Schedule for Driver #" + to_string(index), dr, false, passes, drivers);
+    if (text.size() == 1)
+        text.push_back("No scheduled rides :D");
     Util::prettyPrint(text);
     Util::waitForEnter();
 }
 
 void Rides::printPassSchedule(Passes& passes, Drivers& drivers) {
     cout << "<<< Print Passenger Schedule >>>" << endl;
+    if (passes.passListEmpty()) return;
     int index = passes.findPass();
+
     vector<Ride> pr = getPassRides(passes.passList[index]);
     vs text = Util::getList("Schedule for Passenger #" + to_string(index), pr, false, passes, drivers);
+    if (text.size() == 1)
+        text.push_back("No scheduled rides :D");
     Util::prettyPrint(text);
     Util::waitForEnter();
 }
 
 void Rides::removeUselessRides() {
+    cout << "<<< Remove Completed/Cancelled Rides >>>" << endl;
+    if (rideListEmpty()) return;
+    vi removed;
     for (pair<int, Ride> r : rideList) {
         if (r.second.getStatus() == Status::CANCELLED || r.second.getStatus() == Status::COMPLETED) {
+            removed.push_back(r.first);
             rideList.erase(r.first);
         }
     }
+    cout << "Removed rides: " << endl << endl;
+    for (auto& i : removed)
+        rideList[i].printRide();
+    Util::waitForEnter();
 }
 
 bool Rides::rideListEmpty() {

@@ -33,6 +33,7 @@ public:
     static string printTime(long milli);
     static string printUnlessDefault(double in, bool time);
     static void mainLoop(Drivers& drivers, Passes& passes, Rides& rides);
+    static void clearSaveFile();
 };
 
 #endif //FUNCS_H

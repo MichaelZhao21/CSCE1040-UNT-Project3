@@ -24,7 +24,7 @@ void Drivers::addDriver() {
     Util::parseInput(name, "Name", false);
     Util::parseInput(cap, "Car capacity", 1, 8, false);
     Util::parseInput(hcp, "Handicapped capable", false);
-    Util::parseInput(type, "Vehicle type", vs{"Compact (2WD)", "Sedan (4WD)", "SUV", "VAN", "OTHER"}, false);
+    Util::parseInput(type, "Vehicle type", vs{"Compact (2WD)", "Sedan (4WD)", "SUV", "Van", "Other"}, false);
     Util::parseInput(rating, "Driver rating", 0, 5, false);
     Util::parseInput(open, "Availability", false);
     Util::parseInput(pets, "Allows pets", false);
