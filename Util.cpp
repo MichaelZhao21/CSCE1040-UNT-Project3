@@ -1,5 +1,7 @@
 #include "Util.h"
 
+#include <utility>
+
 bool Util::parseInput(int& in, const string& message, int start, int end, bool checkDefault) {
     in = start - 1;
     while (cin.fail() || in < start || in > end) {
@@ -290,6 +292,35 @@ void Util::prettyPrint(vs messages) {
     cout << "+" << string(maxWidth - 2, '-') << "+" << endl << endl;
 }
 
+vs Util::getList(string title, vector<Ride> rideGroup, bool onlyTime, Passes& passes, Drivers& drivers) {
+    vs text{move(title)};
+    stringstream temp;
+    for (auto & r : rideGroup) {
+        temp << r.getId();
+        if (!onlyTime){
+            temp << " | " << "P: " << passes.passList[r.getPassId()].getName() << " (" << r.getPassId() << ") | ";
+            temp << "D: " << drivers.driverList[r.getDriverId()].getName() << " (" << r.getDriverId();
+        }
+        long start = r.getPickTime();
+        long end = r.getDropTime();
+        string st = ctime(&start);
+        string et = ctime(&end);
+        temp << " - " << st.substr(0, st.length() - 1) << " | " << et.substr(0, et.length() - 1);
+        text.push_back(temp.str());
+        temp.clear();
+    }
+    return text;
+}
+
+vs Util::getList(string title, vector<Driver> driverGroup) {
+
+}
+
+vs Util::getList(string title, vector<Pass> passGroup) {
+
+}
+
+
 void Util::waitForEnter() {
     cout << "Press enter to continue...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -366,10 +397,10 @@ void Util::mainLoop(Drivers &drivers, Passes &passes, Rides &rides) {
                             rides.addRide(passes, drivers);
                             break;
                         case 7:
-                            rides.cancelRide();
+                            rides.cancelRide(passes, drivers);
                             break;
                         case 8:
-                            rides.rateRides();
+                            rides.rateRides(passes, drivers);
                             break;
                         case 9:
                             rides.printPassSchedule(passes);
@@ -386,7 +417,7 @@ void Util::mainLoop(Drivers &drivers, Passes &passes, Rides &rides) {
                             rides.printAllRides();
                             break;
                         case 2:
-                            rides.findandPrintRide();
+                            rides.findandPrintRide(passes, drivers);
                             break;
                         case 3:
                             rides.printRideByStatus(Status::ACTIVE);

@@ -17,6 +17,7 @@ public:
     int findPass();
     void findAndPrintPass();
     void printAllPasses();
+    bool passListEmpty();
     unordered_map<int, Pass> passList;
 private:
     int nextId;

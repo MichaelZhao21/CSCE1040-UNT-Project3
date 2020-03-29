@@ -17,6 +17,7 @@ public:
     int findDriver();
     void findAndPrintDriver();
     void printAllDrivers();
+    bool driverListEmpty();
     unordered_map<int, Driver> driverList;
 private:
     int nextId;

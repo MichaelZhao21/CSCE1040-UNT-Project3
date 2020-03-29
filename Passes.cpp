@@ -75,7 +75,19 @@ void Passes::findAndPrintPass() {
 }
 
 void Passes::printAllPasses() {
+    cout << "<<< Print All Passengers >>>" << endl;
+    if (passList.empty())
+        cout << "No Passengers :(" << endl << endl;
     for (pair<int, Pass> p : passList)
         p.second.printPass();
     Util::waitForEnter();
+}
+
+bool Passes::passListEmpty() {
+    if (passList.empty()) {
+        cout << "No passengers :(" << endl << endl;
+        Util::waitForEnter();
+        return true;
+    }
+    return false;
 }

@@ -1,7 +1,6 @@
 #include "Util.h"
 #include "Rides.h"
 
-
 Rides::Rides() : rideList(unordered_map<int, Ride>()), nextId(10000000) {}
 
 Rides::Rides(const unordered_map<int, Ride> &rideList, int nextId) : rideList(rideList), nextId(nextId) {}
@@ -22,6 +21,7 @@ void Rides::addRide(Passes& passes, Drivers& drivers) {
     vi possDrivers;
 
     cout << "<<< New Ride >>>" << endl;
+    if (passes.passListEmpty()) return;
     id = nextId++;
     bool hasDrivers = false;
     while (!hasDrivers) {
@@ -81,24 +81,28 @@ void Rides::checkDriverTime(vi& poss, Drivers& drivers, time_t pickTime, time_t 
     }
 }
 
-int Rides::findRide() {
-    vs text {"Pick a ride"};
-    for (pair<int, Ride> rp : rideList) {
-        text.push_back(to_string(rp.second.getId()) + " | " + "Passenger: " + to_string(rp.second.getPassId()) + " | " + "Driver: " + to_string(rp.second.getDriverId()));
+int Rides::findRide(Passes& passes, Drivers& drivers) {
+    if (rideListEmpty()) return -1;
+    vector<Ride> rideVec;
+    for (pair<int, Ride> r : rideList) {
+        rideVec.push_back(r.second);
     }
+    vs text = Util::getList("Pick a ride", rideVec, false, passes, drivers);
     int index = Util::menu(text);
     return stoi(text[index]);
 }
 
-void Rides::findandPrintRide() {
+void Rides::findandPrintRide(Passes& passes, Drivers& drivers) {
     cout << "<<< Find Ride >>>" << endl;
-    rideList[findRide()].printRide();
+    if (rideListEmpty()) return;
+    rideList[findRide(passes, drivers)].printRide();
     Util::waitForEnter();
 }
 
-void Rides::cancelRide() {
+void Rides::cancelRide(Passes& passes, Drivers& drivers) {
     cout << "<<< Cancel Ride >>>" << endl;
-    int r = findRide();
+    if (rideListEmpty()) return;
+    int r = findRide(passes, drivers);
     rideList[r].printRide();
     bool confirm;
     Util::parseInput(confirm, "Are you sure you want to delete this ride?", false);
@@ -106,9 +110,10 @@ void Rides::cancelRide() {
     if (confirm) rideList[r].setStatus(Status::CANCELLED);
 }
 
-void Rides::rateRides() {
+void Rides::rateRides(Passes& passes, Drivers& drivers) {
     cout << "<<< Rate Ride >>>" << endl;
-    int r = findRide();
+    if (rideListEmpty()) return;
+    int r = findRide(passes, drivers);
     double rating;
     Util::parseInput(rating, "Enter rating", 0, 5, false);
     rideList[r].setRating(rating);
@@ -116,6 +121,7 @@ void Rides::rateRides() {
 
 void Rides::printAllRides() {
     cout << "<<< Print All Rides >>>" << endl;
+    if (rideListEmpty()) return;
     for (pair<int, Ride> r : rideList)
         r.second.printRide();
     Util::waitForEnter();
@@ -152,13 +158,7 @@ void Rides::printDriverSchedule(Drivers& drivers) {
     int index = drivers.findDriver();
     vector<Ride> dr = getDriverRides(drivers.driverList[index]);
     vs text {"Schedule for Driver #" + to_string(index)};
-    for (int i = 0; i < dr.size(); i++) {
-        long start = dr[i].getPickTime();
-        long end = dr[i].getDropTime();
-        string st = ctime(&start);
-        string et = ctime(&end);
-        text.push_back(to_string(dr[i].getId()) + " -> " + st.substr(0, st.length() - 1) + " | " + et.substr(0, et.length() - 1));
-    }
+
     Util::prettyPrint(text);
     Util::waitForEnter();
 }
@@ -185,4 +185,13 @@ void Rides::removeUselessRides() {
             rideList.erase(r.first);
         }
     }
+}
+
+bool Rides::rideListEmpty() {
+    if (rideList.empty()) {
+        cout << "No rides :(" << endl << endl;
+        Util::waitForEnter();
+        return true;
+    }
+    return false;
 }

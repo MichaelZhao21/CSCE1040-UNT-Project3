@@ -82,7 +82,19 @@ void Drivers::findAndPrintDriver() {
 }
 
 void Drivers::printAllDrivers() {
+    cout << "<<< Print All Drivers >>>" << endl;
+    if (driverList.empty())
+        cout << "No Drivers :(" << endl << endl;
     for (pair<int, Driver> d : driverList)
         d.second.printDriver();
     Util::waitForEnter();
+}
+
+bool Drivers::driverListEmpty() {
+    if (driverList.empty()) {
+        cout << "No drivers :(" << endl << endl;
+        Util::waitForEnter();
+        return true;
+    }
+    return false;
 }

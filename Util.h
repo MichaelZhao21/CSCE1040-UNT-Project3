@@ -26,7 +26,10 @@ public:
     static int menu(vs text);
     static void load(Drivers &drivers, Passes &passes, Rides &rides);
     static void save(Drivers &drivers, Passes &passes, Rides &rides);
-    static void prettyPrint(vector<string> messages);
+    static void prettyPrint(vs messages);
+    static vs getList(string title, vector<Ride> rideGroup, bool onlyTime, Passes& passes, Drivers& drivers);
+    static vs getList(string title, vector<Driver> driverGroup);
+    static vs getList(string title, vector<Pass> passGroup);
     static void waitForEnter();
     static string bts(bool in);
     static string printTime(long milli);
