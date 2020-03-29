@@ -23,28 +23,32 @@ void Rides::addRide(Passes& passes, Drivers& drivers) {
     cout << "<<< New Ride >>>" << endl;
     if (passes.passListEmpty()) return;
     id = nextId++;
-    bool hasDrivers = false;
-    passId = passes.findPass();
-    while (!hasDrivers) {
+        passId = passes.findPass();
         Util::parseInput(pickLoc, "Pickup location", false);
         Util::parseInput(pickTime, "Pickup time", false);
+        if (pickTime < time(nullptr)) {
+            cout << "Time has already passed" << endl << endl;
+            Util::waitForEnter();
+            return;
+        }
         Util::parseInput(dropLoc, "Dropoff location", false);
         Util::parseInput(hours, "Length of ride [hours]", 0, 24, false);
         Util::parseInput(mins, "Length of ride [mins]", 0, 59, false);
         Util::parseInput(size, "Party size", 1, 8, false);
         Util::parseInput(pets, "Party has pets", false);
         dropTime = pickTime + (hours * 3600) + (mins * 60);
+        if (!checkPassTime(passId, passes, pickTime, dropTime)) {
+            cout << "Passenger busy during this time" << endl << endl;
+            Util::waitForEnter();
+            return;
+        }
         possDrivers = findAllMatchingDrivers(passes.passList[passId], drivers, size, pets);
         checkDriverTime(possDrivers, drivers, pickTime, dropTime);
-        hasDrivers = (!possDrivers.empty());
-        if (!hasDrivers) {
-            cout << endl << "No drivers found :(((" << endl;
-            bool cont;
-            Util::parseInput(cont, "Try again?", false);
-            cout << endl;
-            if (!cont) return;
+        if (possDrivers.empty()) {
+            cout << "No drivers available :(((" << endl << endl;
+            Util::waitForEnter();
+            return;
         }
-    }
 
     vs text {"Pick a driver"};
     for (int i = 0; i < possDrivers.size(); i++)
@@ -89,6 +93,15 @@ void Rides::checkDriverTime(vi& poss, Drivers& drivers, time_t pickTime, time_t 
     }
 }
 
+bool Rides::checkPassTime(int passId, Passes& passes, time_t pickTime, time_t dropTime) {
+    vector<Ride> passRides = getPassRides(passes.passList[passId]);
+    for (auto& passRide : passRides) {
+        if (passRide.getPickTime() < dropTime && pickTime < passRide.getDropTime())
+            return false;
+    }
+    return true;
+}
+
 int Rides::findRide(Passes& passes, Drivers& drivers) {
     if (rideListEmpty()) {
         perror("RideList empty in Rides::findRide");
@@ -112,12 +125,20 @@ void Rides::findandPrintRide(Passes& passes, Drivers& drivers) {
 
 void Rides::cancelRide(Passes& passes, Drivers& drivers) {
     cout << "<<< Cancel Ride >>>" << endl;
-    if (rideListEmpty()) return;
-    int r = findRide(passes, drivers);
+    vector<Ride> rides;
+    for (auto& r : rideList)
+        if (r.second.getStatus() == Status::ACTIVE)
+            rides.push_back(r.second);
+    if (rides.empty()) {
+        cout << "No active rides :(" << endl << endl;
+        Util::waitForEnter();
+        return;
+    }
+    vs text = Util::getList("Pick a ride", rides, false, passes, drivers);
+    int r = stoi(text[Util::menu(text)]);
     rideList[r].printRide();
     bool confirm;
-    Util::parseInput(confirm, "Are you sure you want to delete this ride?", false);
-    cout << endl;
+    Util::parseInput(confirm, "Are you sure you want to cancel this ride?", false);
     if (confirm) rideList[r].setStatus(Status::CANCELLED);
 }
 
@@ -133,7 +154,7 @@ void Rides::rateRides(Passes& passes, Drivers& drivers) {
         return;
     }
     vs text = Util::getList("Pick a ride", rides, false, passes, drivers);
-    int r = Util::menu(text);
+    int r = stoi(text[Util::menu(text)]);
     double rating;
     Util::parseInput(rating, "Enter rating", 0, 5, false);
     rideList[r].setRating(rating);
@@ -147,22 +168,25 @@ void Rides::printAllRides() {
     Util::waitForEnter();
 }
 
-void Rides::printRideByStatus(Status s) {
+void Rides::printRideByStatus(Status s, Passes& passes, Drivers& drivers) {
     cout << "<<< Print all " << Ride::statusToString(s) << " Rides >>>" << endl;
     if (rideListEmpty()) return;
-    vs text {Ride::statusToString(s) + " Rides"};
+    vector<Ride> statRides;
     for (pair<int, Ride> r : rideList) {
         if (r.second.getStatus() == s)
-            text.push_back(to_string(r.second.getId()) + " | " + "Passenger: " + to_string(r.second.getPassId()) + " | " + "Driver: " + to_string(r.second.getDriverId()));
+            statRides.push_back(r.second);
     }
-    Util::prettyPrint(text);
+    vs list = Util::getList(Ride::statusToString(s) + " Rides", statRides, false, passes, drivers);
+    if (list.size() == 1)
+        cout << "No " + Ride::statusToString(s) + " rides :(" << endl << endl;
+    else
+        Util::prettyPrint(list);
     Util::waitForEnter();
 }
 
 vector<Ride> Rides::getDriverRides(Driver& driver) {
     vector<Ride> output;
     for (pair<int, Ride> r : rideList) {
-        r.second.printRide();
         if (r.second.getDriverId() == driver.getId() && r.second.getStatus() != Status::CANCELLED && r.second.getStatus() != Status::COMPLETED)
             output.push_back(r.second);}
     return output;
@@ -212,10 +236,22 @@ void Rides::removeUselessRides() {
             rideList.erase(r.first);
         }
     }
+    if (removed.empty()) {
+        cout << "No rides removed" << endl << endl;
+        Util::waitForEnter();
+        return;
+    }
     cout << "Removed rides: " << endl << endl;
     for (auto& i : removed)
-        rideList[i].printRide();
+        cout << "- Ride #" << i << endl;
+    cout << endl;
     Util::waitForEnter();
+}
+
+void Rides::removeRide(Passes& passes, Drivers& drivers) {
+    cout << "<<< Remove Ride >>>" << endl;
+    if (rideListEmpty()) return;
+    rideList.erase(findRide(passes, drivers));
 }
 
 bool Rides::rideListEmpty() {
@@ -225,4 +261,10 @@ bool Rides::rideListEmpty() {
         return true;
     }
     return false;
+}
+
+void Rides::checkRideCompletion() {
+    for (auto& r : rideList)
+        if (r.second.getDropTime() <= time(nullptr))
+            r.second.setStatus(Status::COMPLETED);
 }

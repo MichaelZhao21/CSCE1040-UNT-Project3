@@ -110,12 +110,13 @@ bool Util::parseInput(time_t& in, const string &message, bool checkDefault) {
         ltm->tm_year = stoi(date.substr(6, 4)) - 1900;
     }
     if (timeDef) {
-        ltm->tm_hour = stoi(timeIn.substr(0, 2)) + 1;
+        ltm->tm_hour = stoi(timeIn.substr(0, 2));
         ltm->tm_min = stoi(timeIn.substr(3, 2));
         ltm->tm_sec = stoi(timeIn.substr(6, 2));
     }
 
     in = mktime(ltm);
+    time_t memad = time(nullptr);
     return true;
 }
 
@@ -149,8 +150,7 @@ unordered_map<TextLabel, vs> Util::getBlockText() {
         else currText.push_back(temp);
     }
     in.close();
-    cout << "WEFJWEBFJERBGJKSRHNBGHERGKJERbgwr" << endl;
-    prettyPrint(blockText[TextLabel::INTRO]);
+
     return blockText;
 }
 
@@ -259,8 +259,8 @@ void Util::prettyPrint(vs messages) {
 
 vs Util::getList(string title, const vector<Ride>& rideGroup, bool onlyTime, Passes& passes, Drivers& drivers) {
     vs text{move(title)};
-    stringstream temp;
     for (auto & r : rideGroup) {
+        stringstream temp;
         temp << r.getId();
         if (!onlyTime){
             temp << " | " << "P: " << passes.passList[r.getPassId()].getName() << " (#" << r.getPassId() << ") | ";
@@ -272,19 +272,15 @@ vs Util::getList(string title, const vector<Ride>& rideGroup, bool onlyTime, Pas
         string et = ctime(&end);
         temp << " | " << st.substr(0, st.length() - 1) << " -> " << et.substr(0, et.length() - 1);
         text.push_back(temp.str());
-        temp.clear();
     }
     return text;
 }
 
-vs Util::getList(string title, vector<Driver> driverGroup) {
-
+void Util::printCurrTime() {
+    time_t now = time(nullptr);
+    cout << "Current time is: " << ctime(&now) << endl;
+    waitForEnter();
 }
-
-vs Util::getList(string title, vector<Pass> passGroup) {
-
-}
-
 
 void Util::waitForEnter() {
     cout << "Press enter to continue...";
@@ -309,11 +305,14 @@ string Util::printUnlessDefault(double in, bool time) {
 
 void Util::mainLoop(Drivers& drivers, Passes& passes, Rides& rides) {
     unordered_map<TextLabel, vs> blockText = getBlockText();
+    prettyPrint(blockText[TextLabel::INTRO]);
     bool submenu = false;
     int choice = 0;
     int choice2 = 0;
 
     while (submenu || choice != 4) {
+        rides.checkRideCompletion();
+        Util::fixErrors(drivers, passes, rides);
         if (submenu) {
             switch (choice) {
                 case 1:
@@ -387,19 +386,26 @@ void Util::mainLoop(Drivers& drivers, Passes& passes, Rides& rides) {
                             rides.findandPrintRide(passes, drivers);
                             break;
                         case 3:
-                            rides.printRideByStatus(Status::ACTIVE);
+                            rides.printRideByStatus(Status::ACTIVE, passes, drivers);
                             break;
                         case 4:
-                            rides.printRideByStatus(Status::COMPLETED);
+                            rides.printRideByStatus(Status::COMPLETED, passes, drivers);
                             break;
                         case 5:
-                            rides.printRideByStatus(Status::CANCELLED);
+                            rides.printRideByStatus(Status::CANCELLED, passes, drivers);
                             break;
                         case 6:
                             rides.removeUselessRides();
                             break;
                         case 7:
-                            Util::clearSaveFile();
+                            rides.removeRide(passes, drivers);
+                            break;
+                        case 8:
+                            Util::clearData(drivers, passes, rides);
+                            break;
+                        case 9:
+                            Util::printCurrTime();
+                            break;
                         default:
                             submenu = false;
                             break;
@@ -415,11 +421,21 @@ void Util::mainLoop(Drivers& drivers, Passes& passes, Rides& rides) {
         }
 
     }
+    fixErrors(drivers, passes, rides);
 }
 
-void Util::clearSaveFile() {
+void Util::clearData(Drivers& drivers, Passes& passes, Rides& rides) {
     ofstream dat("mg.dat");
     if (dat.good())
         dat << "";
+    drivers = Drivers();
+    passes = Passes();
+    rides = Rides();
     dat.close();
+}
+
+void Util::fixErrors(Drivers& drivers, Passes& passes, Rides& rides) {
+    drivers.driverList.erase(0);
+    passes.passList.erase(0);
+    rides.rideList.erase(0);
 }

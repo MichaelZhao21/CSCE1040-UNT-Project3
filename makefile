@@ -26,7 +26,7 @@ Util.o: Util.cpp Pass.h Ride.h Driver.h Passes.h Rides.h Drivers.h Util.h Defs.h
 	g++ -c Util.cpp
 
 clean:
-	rm MeanGreenEagleLift main.o Pass.o Ride.o Driver.o Passes.o Rides.o Drivers.o
+	rm MeanGreenEagleLift *.o
 
 run:
 	make && ./MeanGreenEagleLift

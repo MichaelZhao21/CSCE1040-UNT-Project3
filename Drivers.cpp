@@ -65,7 +65,6 @@ void Drivers::removeDriver() {
     cout << "<<< Remove Driver >>>" << endl;
     if (driverListEmpty()) return;
     driverList.erase(findDriver());
-    cout << endl;
 }
 
 int Drivers::findDriver() {

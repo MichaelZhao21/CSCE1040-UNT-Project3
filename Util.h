@@ -26,14 +26,14 @@ public:
     static void save(Drivers &drivers, Passes &passes, Rides &rides);
     static void prettyPrint(vs messages);
     static vs getList(string title, const vector<Ride>& rideGroup, bool onlyTime, Passes& passes, Drivers& drivers);
-    static vs getList(string title, vector<Driver> driverGroup);
-    static vs getList(string title, vector<Pass> passGroup);
+    static void printCurrTime();
     static void waitForEnter();
     static string bts(bool in);
     static string printTime(long milli);
     static string printUnlessDefault(double in, bool time);
     static void mainLoop(Drivers& drivers, Passes& passes, Rides& rides);
-    static void clearSaveFile();
+    static void clearData(Drivers& drivers, Passes& passes, Rides& rides);
+    static void fixErrors(Drivers &drivers, Passes &passes, Rides &rides);
 };
 
 #endif //FUNCS_H

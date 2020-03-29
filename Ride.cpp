@@ -103,7 +103,7 @@ void Ride::setDriverId(int driverId) {
 }
 
 void Ride::printRide() {
-    string pt = Util::printTime(time(nullptr));
+    string pt = Util::printTime(pickTime);
     string dt = Util::printUnlessDefault(dropTime, true);
     vs text {"Ride #" + to_string(id),
                          "Pickup Location: " + pickLoc,
