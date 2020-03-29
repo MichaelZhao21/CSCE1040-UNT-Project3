@@ -17,17 +17,12 @@ public:
     vi findAllMatchingDrivers(Pass& pass, Drivers& drivers, int size, bool pets);
     bool checkDriverMatchReq(Driver& driver, Pass& pass, int size, bool pets);
     void checkDriverTime(vi& poss, Drivers& drivers, time_t pickTime, time_t dropTime);
-    void editRide();
-    void removeRide();
     int findRide();
+    void findandPrintRide();
     void cancelRide();
     void rateRides();
     void printAllRides();
-    unordered_map<int, Ride> findAllPassRides();
-    unordered_map<int, Ride> findAllDriverRides();
-    void printActiveRides();
-    void printCompletedRides();
-    void printCancelledRides();
+    void printRideByStatus(Status s);
     vector<Ride> getDriverRides(Driver& driver);
     vector<Ride> getPassRides(Pass& pass);
     void printDriverSchedule(Drivers& drivers);
@@ -36,6 +31,7 @@ public:
     unordered_map<int, Ride> rideList;
 private:
     int nextId;
+
 };
 
 #endif //RIDES_H

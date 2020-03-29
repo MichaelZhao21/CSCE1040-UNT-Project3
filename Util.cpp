@@ -386,19 +386,19 @@ void Util::mainLoop(Drivers &drivers, Passes &passes, Rides &rides) {
                             rides.printAllRides();
                             break;
                         case 2:
-
+                            rides.findandPrintRide();
                             break;
                         case 3:
-
+                            rides.printRideByStatus(Status::ACTIVE);
                             break;
                         case 4:
-
+                            rides.printRideByStatus(Status::COMPLETED);
                             break;
                         case 5:
-
+                            rides.printRideByStatus(Status::CANCELLED);
                             break;
                         case 6:
-
+                            rides.removeUselessRides();
                             break;
                         default:
                             submenu = false;

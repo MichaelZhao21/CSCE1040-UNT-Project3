@@ -35,6 +35,7 @@ public:
     int getDriverId() const;
     void setDriverId(int driverId);
     void printRide();
+    static string statusToString(Status s);
 private:
     int id, size, passId, driverId;
     string pickLoc, dropLoc;
@@ -42,7 +43,6 @@ private:
     bool pets;
     Status status;
     double rating;
-    static string statusToString(Status s);
 };
 
 

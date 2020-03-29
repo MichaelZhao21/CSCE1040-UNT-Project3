@@ -81,14 +81,6 @@ void Rides::checkDriverTime(vi& poss, Drivers& drivers, time_t pickTime, time_t 
     }
 }
 
-void Rides::editRide() {
-
-}
-
-void Rides::removeRide() {
-
-}
-
 int Rides::findRide() {
     vs text {"Pick a ride"};
     for (pair<int, Ride> rp : rideList) {
@@ -96,6 +88,12 @@ int Rides::findRide() {
     }
     int index = Util::menu(text);
     return stoi(text[index]);
+}
+
+void Rides::findandPrintRide() {
+    cout << "<<< Find Ride >>>" << endl;
+    rideList[findRide()].printRide();
+    Util::waitForEnter();
 }
 
 void Rides::cancelRide() {
@@ -117,29 +115,20 @@ void Rides::rateRides() {
 }
 
 void Rides::printAllRides() {
+    cout << "<<< Print All Rides >>>" << endl;
     for (pair<int, Ride> r : rideList)
         r.second.printRide();
     Util::waitForEnter();
 }
 
-unordered_map<int, Ride> Rides::findAllPassRides() {
-    return unordered_map<int, Ride>();
-}
-
-unordered_map<int, Ride> Rides::findAllDriverRides() {
-    return unordered_map<int, Ride>();
-}
-
-void Rides::printActiveRides() {
-
-}
-
-void Rides::printCompletedRides() {
-
-}
-
-void Rides::printCancelledRides() {
-
+void Rides::printRideByStatus(Status s) {
+    vs text {Ride::statusToString(s) + " Rides"};
+    for (pair<int, Ride> r : rideList) {
+        if (r.second.getStatus() == s)
+            text.push_back(to_string(r.second.getId()) + " | " + "Passenger: " + to_string(r.second.getPassId()) + " | " + "Driver: " + to_string(r.second.getDriverId()));
+    }
+    Util::prettyPrint(text);
+    Util::waitForEnter();
 }
 
 vector<Ride> Rides::getDriverRides(Driver& driver) {
@@ -191,5 +180,9 @@ void Rides::printPassSchedule(Passes& passes) {
 }
 
 void Rides::removeUselessRides() {
-
+    for (pair<int, Ride> r : rideList) {
+        if (r.second.getStatus() == Status::CANCELLED || r.second.getStatus() == Status::COMPLETED) {
+            rideList.erase(r.first);
+        }
+    }
 }
