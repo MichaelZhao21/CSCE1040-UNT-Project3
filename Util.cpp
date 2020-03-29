@@ -39,9 +39,19 @@ bool Util::parseInput(double& in, const string &message, double start, double en
 }
 
 bool Util::parseInput(string& in, const string &message, bool checkDefault) {
-    cout << message << ": ";
-    getline(cin, in);
-    return !(checkDefault && in.empty());
+    in = "";
+    if (checkDefault) {
+        cout << message << ": ";
+        getline(cin, in);
+        return in.empty();
+    }
+    else {
+        while (in.empty()) {
+            cout << message << ": ";
+            getline(cin, in);
+        }
+        return true;
+    }
 }
 
 bool Util::parseInput(int &in, const string &message, const vs &enumNames, bool checkDefault) {
@@ -129,64 +139,24 @@ bool Util::formattedStringInput(string& in, const string &message, const string 
     return true;
 }
 
-void Util::setBlockText() {
-    blockText = {
-        {
-            TextLabel::INTRO,
-                {"CSCE 1040 PROJECT 3",
-                 "Name:        Michael Zhao (michaelzhao314@gmail.com)",
-                 "Date:        3/20/2020",
-                 "Instructor:  Mark Keathly",
-                 "Description: This project is a simulation of a real system used to schedule drivers",
-                 "             and passengers using a transaction-based class system. The system can",
-                 "             create schedules, manage rides, and automatically checks for requirements",
-                 "             before allocating drivers to passengers. Additionally, it has a save and",
-                 "             load system as well as input checking."}
-        },
-        {
-            TextLabel::MAIN,
-                {"MG EAGLELIFT",
-                 "Driver Menu",
-                 "Passenger Menu",
-                 "Admin Menu",
-                 "Quit Program"}
-        },
-        {
-            TextLabel::DRIVER,
-                {"MG EAGLELIFT [Driver]",
-                 "Add Driver",
-                 "Edit Driver",
-                 "Delete Driver",
-                 "Find Driver",
-                 "Show all Drivers",
-                 "Print Driver Schedule",
-                 "Back"}
-        },
-        {
-            TextLabel::PASS,
-                {"MG EAGLELIFT [Passenger]",
-                 "Add Passenger",
-                 "Edit Passenger",
-                 "Delete Passenger",
-                 "Find Passenger",
-                 "Show all Passengers",
-                 "Order Ride",
-                 "Cancel Ride",
-                 "Enter Ratings",
-                 "Print Passenger Schedule",
-                 "Back"}
-        },
-        {
-            TextLabel::ADMIN,
-                {"MEAN GREEN EAGLELIFT SYSTEM [Admin]",
-                 "View All Rides",
-                 "Find a Ride by ID",
-                 "View all active Rides",
-                 "View all completed Rides",
-                 "View all cancelled Rides",
-                 "Remove all completed/cancelled Rides",
-                 "Back"}
-        }};
+unordered_map<TextLabel, vs> Util::getBlockText() {
+    unordered_map<TextLabel, vs> blockText;
+    ifstream in("blocktext");
+    string temp;
+    vs currText;
+    int ctr = 0;
+    while (getline(in, temp)) {
+        if (temp == "1") {
+            blockText[(TextLabel)ctr] = currText;
+            currText.clear();
+            ctr++;
+        }
+        else currText.push_back(temp);
+    }
+    in.close();
+    cout << "WEFJWEBFJERBGJKSRHNBGHERGKJERbgwr" << endl;
+    prettyPrint(blockText[TextLabel::INTRO]);
+    return blockText;
 }
 
 int Util::menu(vs text) {
@@ -292,20 +262,20 @@ void Util::prettyPrint(vs messages) {
     cout << "+" << string(maxWidth - 2, '-') << "+" << endl << endl;
 }
 
-vs Util::getList(string title, vector<Ride> rideGroup, bool onlyTime, Passes& passes, Drivers& drivers) {
+vs Util::getList(string title, const vector<Ride>& rideGroup, bool onlyTime, Passes& passes, Drivers& drivers) {
     vs text{move(title)};
     stringstream temp;
     for (auto & r : rideGroup) {
-        temp << r.getId();
+        temp << "#" << r.getId();
         if (!onlyTime){
-            temp << " | " << "P: " << passes.passList[r.getPassId()].getName() << " (" << r.getPassId() << ") | ";
-            temp << "D: " << drivers.driverList[r.getDriverId()].getName() << " (" << r.getDriverId();
+            temp << " | " << "P: " << passes.passList[r.getPassId()].getName() << " (#" << r.getPassId() << ") | ";
+            temp << "D: " << drivers.driverList[r.getDriverId()].getName() << " (#" << r.getDriverId() << ")";
         }
         long start = r.getPickTime();
         long end = r.getDropTime();
         string st = ctime(&start);
         string et = ctime(&end);
-        temp << " - " << st.substr(0, st.length() - 1) << " | " << et.substr(0, et.length() - 1);
+        temp << " | " << st.substr(0, st.length() - 1) << " -> " << et.substr(0, et.length() - 1);
         text.push_back(temp.str());
         temp.clear();
     }
@@ -342,10 +312,12 @@ string Util::printUnlessDefault(double in, bool time) {
     return to_string(in);
 }
 
-void Util::mainLoop(Drivers &drivers, Passes &passes, Rides &rides) {
+void Util::mainLoop(Drivers& drivers, Passes& passes, Rides& rides) {
+    unordered_map<TextLabel, vs> blockText = getBlockText();
     bool submenu = false;
     int choice = 0;
     int choice2 = 0;
+
     while (submenu || choice != 4) {
         if (submenu) {
             switch (choice) {
@@ -368,7 +340,7 @@ void Util::mainLoop(Drivers &drivers, Passes &passes, Rides &rides) {
                             drivers.printAllDrivers();
                             break;
                         case 6:
-                            rides.printDriverSchedule(drivers);
+                            rides.printDriverSchedule(passes, drivers);
                             break;
                         default:
                             submenu = false;
@@ -403,7 +375,7 @@ void Util::mainLoop(Drivers &drivers, Passes &passes, Rides &rides) {
                             rides.rateRides(passes, drivers);
                             break;
                         case 9:
-                            rides.printPassSchedule(passes);
+                            rides.printPassSchedule(passes, drivers);
                             break;
                         default:
                             submenu = false;

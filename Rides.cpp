@@ -24,8 +24,8 @@ void Rides::addRide(Passes& passes, Drivers& drivers) {
     if (passes.passListEmpty()) return;
     id = nextId++;
     bool hasDrivers = false;
+    passId = passes.findPass();
     while (!hasDrivers) {
-        passId = passes.findPass();
         Util::parseInput(pickLoc, "Pickup location", false);
         Util::parseInput(pickTime, "Pickup time", false);
         Util::parseInput(dropLoc, "Dropoff location", false);
@@ -37,14 +37,23 @@ void Rides::addRide(Passes& passes, Drivers& drivers) {
         possDrivers = findAllMatchingDrivers(passes.passList[passId], drivers, size, pets);
         checkDriverTime(possDrivers, drivers, pickTime, dropTime);
         hasDrivers = (!possDrivers.empty());
+        if (!hasDrivers) {
+            cout << endl << "No drivers found :(((" << endl;
+            bool cont;
+            Util::parseInput(cont, "Try again?", false);
+            cout << endl;
+            if (!cont) return;
+        }
     }
 
     vs text {"Pick a driver"};
     for (int i = 0; i < possDrivers.size(); i++)
         text.push_back(to_string(possDrivers[i]) + " | " + drivers.driverList[possDrivers[i]].getName());
-    driverId = possDrivers[Util::menu(text)];
+    driverId = possDrivers[Util::menu(text) - 1];
 
     rideList[id] = Ride(id, pickLoc, pickTime, dropLoc, size, pets, dropTime, passId, driverId);
+    rideList[id].printRide();
+    Util::waitForEnter();
 }
 
 vi Rides::findAllMatchingDrivers(Pass& pass, Drivers& drivers, int size, bool pets) {
@@ -66,7 +75,6 @@ bool Rides::checkDriverMatchReq(Driver& driver, Pass& pass, int size, bool pets)
 
 void Rides::checkDriverTime(vi& poss, Drivers& drivers, time_t pickTime, time_t dropTime) {
     int i = 0;
-    cout << poss.size() << endl;
     while (i != poss.size()) {
         bool works = true;
         vector<Ride> driverRides = getDriverRides(drivers.driverList[poss[i]]);
@@ -82,13 +90,17 @@ void Rides::checkDriverTime(vi& poss, Drivers& drivers, time_t pickTime, time_t 
 }
 
 int Rides::findRide(Passes& passes, Drivers& drivers) {
-    if (rideListEmpty()) return -1;
+    if (rideListEmpty()) {
+        perror("RideList empty in Rides::findRide");
+        exit(1);
+    }
     vector<Ride> rideVec;
     for (pair<int, Ride> r : rideList) {
         rideVec.push_back(r.second);
     }
     vs text = Util::getList("Pick a ride", rideVec, false, passes, drivers);
     int index = Util::menu(text);
+    cout << text[index];
     return stoi(text[index]);
 }
 
@@ -139,9 +151,10 @@ void Rides::printRideByStatus(Status s) {
 
 vector<Ride> Rides::getDriverRides(Driver& driver) {
     vector<Ride> output;
-    for (pair<int, Ride> r : rideList)
+    for (pair<int, Ride> r : rideList) {
+        r.second.printRide();
         if (r.second.getDriverId() == driver.getId() && r.second.getStatus() != Status::CANCELLED && r.second.getStatus() != Status::COMPLETED)
-            output.push_back(r.second);
+            output.push_back(r.second);}
     return output;
 }
 
@@ -153,28 +166,20 @@ vector<Ride> Rides::getPassRides(Pass& pass) {
     return output;
 }
 
-void Rides::printDriverSchedule(Drivers& drivers) {
+void Rides::printDriverSchedule(Passes& passes, Drivers& drivers) {
     cout << "<<< Print Driver Schedule >>>" << endl;
     int index = drivers.findDriver();
     vector<Ride> dr = getDriverRides(drivers.driverList[index]);
-    vs text {"Schedule for Driver #" + to_string(index)};
-
+    vs text = Util::getList("Schedule for Driver #" + to_string(index), dr, false, passes, drivers);
     Util::prettyPrint(text);
     Util::waitForEnter();
 }
 
-void Rides::printPassSchedule(Passes& passes) {
+void Rides::printPassSchedule(Passes& passes, Drivers& drivers) {
     cout << "<<< Print Passenger Schedule >>>" << endl;
     int index = passes.findPass();
     vector<Ride> pr = getPassRides(passes.passList[index]);
-    vs text {"Schedule for Passenger #" + to_string(index)};
-    for (int i = 0; i < pr.size(); i++) {
-        long start = pr[i].getPickTime();
-        long end = pr[i].getDropTime();
-        string st = ctime(&start);
-        string et = ctime(&end);
-        text.push_back(to_string(pr[i].getId()) + " -> " + st.substr(0, st.length() - 1) + " | " + et.substr(0, et.length() - 1));
-    }
+    vs text = Util::getList("Schedule for Passenger #" + to_string(index), pr, false, passes, drivers);
     Util::prettyPrint(text);
     Util::waitForEnter();
 }

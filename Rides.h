@@ -25,8 +25,8 @@ public:
     void printRideByStatus(Status s);
     vector<Ride> getDriverRides(Driver& driver);
     vector<Ride> getPassRides(Pass& pass);
-    void printDriverSchedule(Drivers& drivers);
-    void printPassSchedule(Passes& passes);
+    void printDriverSchedule(Passes& passes, Drivers& drivers);
+    void printPassSchedule(Passes& passes, Drivers& drivers);
     void removeUselessRides();
     bool rideListEmpty();
     unordered_map<int, Ride> rideList;

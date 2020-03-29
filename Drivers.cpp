@@ -43,6 +43,7 @@ void Drivers::editDriver() {
     bool hcp, open, pets;
 
     cout << "<<< Edit Driver >>>" << endl;
+    if (driverListEmpty()) return;
     int index = findDriver();
 
     cout << "<<< Edit information for Driver #" << index << " >>>" << endl;
@@ -62,11 +63,16 @@ void Drivers::editDriver() {
 
 void Drivers::removeDriver() {
     cout << "<<< Remove Driver >>>" << endl;
+    if (driverListEmpty()) return;
     driverList.erase(findDriver());
     cout << endl;
 }
 
 int Drivers::findDriver() {
+    if (driverListEmpty()) {
+        perror("DriverList empty in Drivers::findDriver");
+        exit(1);
+    }
     vs text {"Pick a driver"};
     for (pair<int, Driver> dp : driverList) {
         text.push_back(to_string(dp.first) + " | " + dp.second.getName());
@@ -77,14 +83,14 @@ int Drivers::findDriver() {
 
 void Drivers::findAndPrintDriver() {
     cout << "<<< Find Driver >>>" << endl;
+    if (driverListEmpty()) return;
     driverList[findDriver()].printDriver();
     Util::waitForEnter();
 }
 
 void Drivers::printAllDrivers() {
     cout << "<<< Print All Drivers >>>" << endl;
-    if (driverList.empty())
-        cout << "No Drivers :(" << endl << endl;
+    if (driverListEmpty()) return;
     for (pair<int, Driver> d : driverList)
         d.second.printDriver();
     Util::waitForEnter();

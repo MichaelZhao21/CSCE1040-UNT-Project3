@@ -41,7 +41,10 @@ void Passes::editPass() {
     double minRating;
 
     cout << "<<< Edit Passenger >>>" << endl;
+    if (passListEmpty()) return;
     int index = findPass();
+
+    cout << "<<< Edit information for Passenger #" << index << " >>>" << endl;
     Util::parseInput(name, "Name", true);
     Util::parseInput(payType, "Payment type", vs{"Cash", "Credit", "Debit"}, true);
     Util::parseInput(hcp, "Handicapped", true);
@@ -55,11 +58,16 @@ void Passes::editPass() {
 
 void Passes::removePass() {
     cout << "<<< Remove Passenger >>>" << endl;
+    if (passListEmpty()) return;
     passList.erase(findPass());
     cout << endl;
 }
 
 int Passes::findPass() {
+    if (passListEmpty()) {
+        perror("PassList empty in Passes::findPass");
+        exit(1);
+    }
     vs text {"Pick a passenger"};
     for (pair<int, Pass> pp : passList) {
         text.push_back(to_string(pp.first) + " | " + pp.second.getName());
@@ -70,14 +78,14 @@ int Passes::findPass() {
 
 void Passes::findAndPrintPass() {
     cout << "<<< Find Passenger >>>" << endl;
+    if (passListEmpty()) return;
     passList[findPass()].printPass();
     Util::waitForEnter();
 }
 
 void Passes::printAllPasses() {
     cout << "<<< Print All Passengers >>>" << endl;
-    if (passList.empty())
-        cout << "No Passengers :(" << endl << endl;
+    if (passListEmpty()) return;
     for (pair<int, Pass> p : passList)
         p.second.printPass();
     Util::waitForEnter();

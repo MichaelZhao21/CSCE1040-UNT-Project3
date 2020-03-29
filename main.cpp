@@ -1,13 +1,7 @@
 #include "Util.h"
 using namespace std;
 
-// Global text storage vector
-unordered_map<TextLabel, vs> blockText;
-
 int main() {
-    // Set block text
-    Util::setBlockText();
-
     // Declare collector objects
     Drivers drivers;
     Passes passes;
