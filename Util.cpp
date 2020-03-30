@@ -1,7 +1,5 @@
 #include "Util.h"
 
-#include <utility>
-
 bool Util::parseInput(int& in, const string& message, int min, int max, bool checkDefault) {
     in = min - 1;
     while (cin.fail() || in < min || in > max) {
