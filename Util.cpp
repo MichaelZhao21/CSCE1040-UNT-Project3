@@ -310,7 +310,8 @@ void Util::mainLoop(Drivers& drivers, Passes& passes, Rides& rides) {
 
     while (submenu || choice != 4) {
         rides.checkRideCompletion();
-        Util::fixErrors(drivers, passes, rides);
+        fixErrors(drivers, passes, rides);
+        save(drivers, passes, rides);
         if (submenu) {
             switch (choice) {
                 case 1:
