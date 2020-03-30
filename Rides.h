@@ -182,6 +182,7 @@ public:
     void checkRideCompletion();
     
     unordered_map<int, Ride> rideList;
+
 private:
     int nextId;
 };

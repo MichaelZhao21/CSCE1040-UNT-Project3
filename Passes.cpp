@@ -45,11 +45,11 @@ void Passes::editPass() {
     int index = findPass();
 
     cout << "<<< Edit information for Passenger #" << index << " >>>" << endl;
-    Util::parseInput(name, "Name", true);
-    Util::parseInput(payType, "Payment type", vs{"Cash", "Credit", "Debit"}, true);
-    Util::parseInput(hcp, "Handicapped", true);
-    Util::parseInput(minRating, "Min rating required", 0, 5, true);
-    Util::parseInput(pets, "Has pets", true);
+    if (Util::parseInput(name, "Name", true)) passList[index].setName(name);
+    if (Util::parseInput(payType, "Payment type", vs{"Cash", "Credit", "Debit"}, true)) passList[index].setPayType((PayType) payType);
+    if (Util::parseInput(hcp, "Handicapped", true)) passList[index].setHcp(hcp);
+    if (Util::parseInput(minRating, "Min rating required", 0, 5, true)) passList[index].setMinRating(minRating);
+    if (Util::parseInput(pets, "Has pets", true)) passList[index].setPets(pets);
     cout << endl;
 
     passList[index].printPass();

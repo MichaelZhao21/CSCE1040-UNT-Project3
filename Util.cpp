@@ -2,10 +2,10 @@
 
 #include <utility>
 
-bool Util::parseInput(int& in, const string& message, int start, int end, bool checkDefault) {
-    in = start - 1;
-    while (cin.fail() || in < start || in > end) {
-        cout << message << " (" << start << "-" << end << "): ";
+bool Util::parseInput(int& in, const string& message, int min, int max, bool checkDefault) {
+    in = min - 1;
+    while (cin.fail() || in < min || in > max) {
+        cout << message << " (" << min << "-" << max << "): ";
         if (checkDefault && cin.peek() == '\n') {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             return false;
@@ -17,18 +17,18 @@ bool Util::parseInput(int& in, const string& message, int start, int end, bool c
     return true;
 }
 
-bool Util::parseInput(double& in, const string &message, double start, double end, bool checkDefault) {
-    in = start - 1;
+bool Util::parseInput(double& in, const string &message, double min, double max, bool checkDefault) {
+    in = min - 1;
     bool fail = true;
     while (fail) {
         fail = false;
-        cout << message << " (" << start << "-" << end << "): ";
+        cout << message << " (" << min << "-" << max << "): ";
         if (checkDefault && cin.peek() == '\n') {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             return false;
         }
         cin >> in;
-        if (cin.fail() || in < start || in > end) {
+        if (cin.fail() || in < min || in > max) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             fail = true;
@@ -50,29 +50,27 @@ bool Util::parseInput(string& in, const string &message, bool checkDefault) {
 }
 
 bool Util::parseInput(int &in, const string &message, const vs &enumNames, bool checkDefault) {
-    int size = enumNames.size();
-    bool fail = true;
-    while (fail) {
-        fail = false;
-        cout << message << " (";
-        for (int i = 1; i < size + 1; i++) {
-            cout << i << " - " << enumNames[i - 1];
-            if (i != size)
-                cout << ", ";
-        }
-        cout << "): ";
+    int max = enumNames.size();
+    int min = 1;
+    stringstream newMessage;
+    newMessage << message << " (";
+    for (int i = 1; i < max + 1; i++) {
+        newMessage << i << " - " << enumNames[i - 1];
+        if (i != max)
+            newMessage << ", ";
+    }
+    newMessage << "): ";
+    in = min - 1;
+    while (cin.fail() || in < min || in > max) {
+        cout << newMessage.str();
         if (checkDefault && cin.peek() == '\n') {
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             return false;
         }
         cin >> in;
-        if (cin.fail() || in < 1 || in > enumNames.size()) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            fail = true;
-        }
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
-    cin.ignore();
     return true;
 }
 
@@ -293,8 +291,8 @@ string Util::bts(bool in) {
     return "no";
 }
 
-string Util::printTime(time_t milli) {
-    return ctime(&milli);
+string Util::printTime(time_t seconds) {
+    return ctime(&seconds);
 }
 
 string Util::printUnlessDefault(double in, bool time) {

@@ -7,8 +7,15 @@ enum PayType {CASH = 1, CREDIT, DEBIT};
 
 class Pass {
 public:
+    /**
+     * Constructors
+     */
     Pass();
     Pass(const string &name, int id, PayType payType, bool hcp, double minRating, bool pets);
+
+    /**
+     * Getters and Setters
+     */
     const string &getName() const;
     void setName(const string &name);
     int getId() const;
@@ -21,13 +28,25 @@ public:
     void setMinRating(double minRating);
     bool getPets() const;
     void setPets(bool hasPets);
+
+    /**
+     * Print the passenger
+     */
     void printPass();
+
 private:
     string name;
     int id;
     PayType payType;
     bool hcp, pets;
     double minRating;
+
+    /**
+     * Converts the PayType enum to a string
+     *
+     * @param p - PayType enum
+     * @return string
+     */
     static string payTypeToString(PayType p);
 };
 

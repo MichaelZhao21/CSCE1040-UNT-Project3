@@ -2,15 +2,21 @@
 #define DRIVER_H
 
 #include "Defs.h"
-using namespace std;
 
 enum VehicleType {COMPACT_2_DR = 1, SEDAN_4_DR, SUV, VAN, OTHER};
 
 class Driver {
 public:
+    /**
+     * Constructors
+     */
     Driver();
     Driver(const string &name, int id, int cap, bool hcp, VehicleType type, double rating, bool open, bool pets,
            const string &notes);
+
+    /**
+     * Getters and setters
+     */
     const string &getName() const;
     void setName(const string &name);
     int getId() const;
@@ -29,13 +35,25 @@ public:
     void setPets(bool pets);
     const string &getNotes() const;
     void setNotes(const string &notes);
+
+    /**
+     * Prints the driver
+     */
     void printDriver();
+
 private:
     string name, notes;
     int id, cap;
     double rating;
     bool hcp, open, pets;
     VehicleType type;
+
+    /**
+     * Converts the VehicleType enum to a string
+     *
+     * @param type - VehicleType enum
+     * @return string
+     */
     static string vehicleTypeToString(VehicleType type);
 };
 
